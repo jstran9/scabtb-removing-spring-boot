@@ -29,9 +29,12 @@ public class HibernateJpaConfig {
     @Autowired
     private DataSource dataSource;
 
+    // Caused by: org.hibernate.MappingException: Repeated column in mapping for entity: guru.springframework.domain.Customer column: addressLine1 (should be mapped with insert="false" update="false")
+    // https://stackoverflow.com/questions/32165694/spring-hibernate-5-naming-strategy-configuration
     public HibernateJpaConfig() {
         properties.put("hibernate.hbm2ddl.auto", "create-drop");
-        properties.put("hibernate.ejb.naming_strategy", "org.hibernate.cfg.DefaultComponentSafeNamingStrategy");
+        properties.put("hibernate.naming_strategy", "org.hibernate.cfg.DefaultComponentSafeNamingStrategy");
+        properties.put("hibernate.implicit_naming_strategy", "org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl");
     }
 
     @Autowired(required = false)

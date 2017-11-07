@@ -55,21 +55,32 @@ public class HibernateJpaConfig {
         return adapter;
     }
 
-    @Bean
-    public EntityManagerFactoryBuilder entityManagerFactoryBuilder(JpaVendorAdapter jpaVendorAdapter) {
-        EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilder(
-                jpaVendorAdapter, properties,
-                this.persistenceUnitManager);
-        builder.setCallback(null);
-        return builder;
-    }
+//    was reliant on Spring Boot
+//    @Bean
+//    public EntityManagerFactoryBuilder entityManagerFactoryBuilder(JpaVendorAdapter jpaVendorAdapter) {
+//        EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilder(
+//                jpaVendorAdapter, properties,
+//                this.persistenceUnitManager);
+//        builder.setCallback(null);
+//        return builder;
+//    }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder factoryBuilder) {
         Map<String, Object> vendorProperties = new LinkedHashMap<String, Object>();
         vendorProperties.putAll(properties);
 
-        return factoryBuilder.dataSource(this.dataSource).packages("guru.springframework.domain")
-                .properties(vendorProperties).jta(false).build();
+//        return factoryBuilder.dataSource(this.dataSource).packages("guru.springframework.domain")
+//                .properties(vendorProperties).jta(false).build();
+
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(dataSource);
+        em.setPackagesToScan("guru.springframework.domain");
+
+        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        em.setJpaPropertyMap(properties);
+
+        return em;
     }
 }

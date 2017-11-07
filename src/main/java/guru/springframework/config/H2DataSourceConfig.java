@@ -26,10 +26,9 @@ public class H2DataSourceConfig implements TransactionManagementConfigurer {
     }
 
     @Bean
-    public PlatformTransactionManager txManager() {
+    public PlatformTransactionManager txManager(){
         return new DataSourceTransactionManager(dataSource());
     }
-
 
     @Override
     public PlatformTransactionManager annotationDrivenTransactionManager() {

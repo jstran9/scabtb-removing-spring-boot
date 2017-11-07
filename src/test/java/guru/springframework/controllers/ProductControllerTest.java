@@ -1,6 +1,7 @@
 package guru.springframework.controllers;
 
 import guru.springframework.commands.ProductForm;
+import guru.springframework.converters.ProductToProductForm;
 import guru.springframework.domain.Product;
 import guru.springframework.exceptions.NotFoundException;
 import guru.springframework.services.ProductService;
@@ -38,6 +39,7 @@ public class ProductControllerTest {
     public void setup(){
         MockitoAnnotations.initMocks(this); //initilizes controller and mocks
 
+        productController.setProductToProductForm(new ProductToProductForm()); // or else an NPE will occur.
         mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
     }
 
@@ -88,12 +90,12 @@ public class ProductControllerTest {
         Integer id = 1;
 
         //Tell Mockito stub to return new product for ID 1
-        when(productService.getById(id)).thenReturn(new Product());
+        when(productService.getById(anyInt())).thenReturn(new Product());
 
         mockMvc.perform(get("/product/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("product/productform"))
-                .andExpect(model().attribute("product", instanceOf(Product.class)));
+                .andExpect(model().attribute("productForm", instanceOf(ProductForm.class)));
     }
 
     @Test
